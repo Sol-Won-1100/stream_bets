@@ -7,7 +7,7 @@
         <link rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
-        <script src="{% static 'js/script.js' %}"></script>   
+        
         <script src="https://kit.fontawesome.com/834cba4574.js"
             crossorigin="anonymous"></script>
         <script type="text/javascript"
@@ -138,15 +138,6 @@
         {% else %}
 
         {% endif %}
-    <script> 
-        // burger menu
-const burgerIcon  = document.querySelector('#burger');
-const navbarMenu  = document.querySelector('#nav-links');
-
-burgerIcon.addEventListener('click', () => {
-	navbarMenu.classList.toggle('is-active');
-});
-
-    </script>
+    <script src="{% static 'js/scripts.js' %}"></script>   
     </body>
 </html>

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import CustomUser, BetHistory
+from .models import CustomUser, BetHistory, UserChannel
 
 
 class CustomUserAdmin(UserAdmin):
@@ -25,3 +25,4 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(BetHistory)
+admin.site.register(UserChannel)

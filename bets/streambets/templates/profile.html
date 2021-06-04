@@ -246,7 +246,14 @@
 
                         </form>
 
-                        {% if user.is_superuser == True %}
+                        {% if user_profile_data.is_streamer == True %}
+                        <span class="tag is-info p-2 mt-2">Стример</span><span class="tag is-gray p-2 mt-2 ml-1" title="Подтверждено" style="cursor:pointer;">✔</span> </p>
+                        <span class="tag is-info p-2 mt-2">{{ user_profile_data.user_channel_data.channel_status }}</span>
+                        
+                    
+                    {% endif %}
+
+                    {% if user.is_superuser == True %}
                         <span class="tag is-warning p-2 mt-2">Администратор</span></p>
                     {% endif %}
                 </p>
@@ -259,31 +266,38 @@
                 <div class="level-item has-text-centered">
                     <div class="ml-5">
                         <p class="heading">Ставок</p>
-                        <p class="title is-5">3,456</p>
+                        <p class="title is-5">{{ user_profile_data.total_bet }}</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered ml-6">
                     <div>
                         <p class="heading">Побед</p>
-                        <p class="title is-5">123</p>
+                        <p class="title is-5 has-text-success">{{ user_profile_data.total_win }}</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered ml-6">
                     <div>
                         <p class="heading">Поражений</p>
-                        <p class="title is-5">456K</p>
+                        <p class="title is-5 has-text-danger">{{ user_profile_data.total_lose }}</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered ml-5">
                     <div>
                         <p class="heading">Заработано</p>
-                        <p class="title is-5">789</p>
+                        <p class="title is-5">{{ user_profile_data.total_earn }}</p>
                     </div>
                 </div>
             </nav>
         </div>
     </div>
 </div>
+
+</div>
+<div class="column is-2">3</div>
+<div class="column is-4 mr-5">
+4
+</div>
+
 
 <script> 
 						 const change_btn = document.querySelector('#change_current_nick');
@@ -319,4 +333,5 @@
 
  						})
                             </script>
+                            
 {% endblock%}

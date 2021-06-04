@@ -13,6 +13,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default=timezone.now)
     is_streamer = models.BooleanField(default= False)
     balance = models.IntegerField(default = 100, verbose_name='Текущий баланс')
+    total_bet = models.IntegerField(default = 0, verbose_name='Всего ставок')
     total_win = models.IntegerField(default = 0, verbose_name='Всего побед')
     total_lose = models.IntegerField(default = 0, verbose_name='Всего Поражений')
     total_earn = models.IntegerField(default = 0, verbose_name='Всего Заработано')
@@ -49,3 +50,28 @@ class BetHistory(models.Model):
 
     class Meta:
         db_table = 'user_bets'
+
+
+class UserChannel(models.Model):
+    """
+    Информация о канале и текущих событиях на нём
+    """
+    CURRENT_STREAM_STATUS = (
+        ('accept_bets', 'Приём ставок'),
+        ('bets_are_made', 'Ставки сделаны')
+    )
+    
+    streamer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='streamer_channel')
+    start_stream = models.DateTimeField(auto_now_add=True) # Когда первый раз начал стримить на нашей площадке
+    channel_status = models.CharField(choices=CURRENT_STREAM_STATUS, max_length=32, verbose_name='Текущий статус стрима', null = True, blank = True)
+    #channel_url = models.CharField(default='Ссылка на канал', unique = True, max_length=42)
+    is_channel_live = models.BooleanField(default = False)
+    channel_url = models.CharField(default='twitch_channel', unique = True, max_length=64)
+    
+    
+
+    class Meta:
+        db_table = 'user_channel'
+
+    def __str__(self):
+        return self.channel_url

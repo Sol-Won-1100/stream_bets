@@ -6,16 +6,21 @@ from django.contrib import messages
 from users.models import CustomUser
 from users.forms import CustomUserCreationForm, UsernameForm
 from .get_data import get_main_data
+from users.models import UserChannel
 
 
 class IndexPage(View):
     def get(self, request):
+        live_channel = UserChannel.objects.filter(is_channel_live = True)
         if request.user.is_authenticated:
+            user_id = request.user.id
+            current_user_data = get_main_data(user_id)
+            context = {'user_profile_data': current_user_data, 'live_channel': live_channel}
             return render(request, 'index.html')
-        user_id = request.user.id
-        current_user_data = get_main_data(user_id)
+        
         register_form = CustomUserCreationForm()
-        context = {'register_form':register_form, 'user_profile_data': current_user_data}
+        
+        context = {'register_form':register_form, 'live_channel': live_channel}
         return render(request, 'index.html', context)
     
     def post(self, request):
@@ -25,10 +30,12 @@ class IndexPage(View):
             form = CustomUserCreationForm(request.POST)
             if form.is_valid():
                 uname = request.POST.get('username')
-                print(f"this is uname: {uname}")
                 form.save()
-                user = form.cleaned_data.get('username')
                 messages.success(request, 'Успешно создали аккаунт')
+                new_user = authenticate(username=form.cleaned_data['email'],
+                                    password=form.cleaned_data['password1'],
+                                    )
+                login(request, new_user)
                 return redirect('main_index_page')
 
         elif 'sign_in' in request.POST:

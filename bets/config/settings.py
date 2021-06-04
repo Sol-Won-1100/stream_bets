@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'streambets',
-    'users'
+    'users',
+    'betting'
 ]
 
 MIDDLEWARE = [
