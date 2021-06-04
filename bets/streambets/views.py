@@ -6,21 +6,19 @@ from django.contrib import messages
 from users.models import CustomUser
 from users.forms import CustomUserCreationForm, UsernameForm
 from .get_data import get_main_data
-from users.models import UserChannel
 
 
 class IndexPage(View):
     def get(self, request):
-        live_channel = UserChannel.objects.filter(is_channel_live = True)
         if request.user.is_authenticated:
             user_id = request.user.id
             current_user_data = get_main_data(user_id)
-            context = {'user_profile_data': current_user_data, 'live_channel': live_channel}
-            return render(request, 'index.html')
+            context = {'user_profile_data': current_user_data}
+            return render(request, 'index.html', context)
         
         register_form = CustomUserCreationForm()
         
-        context = {'register_form':register_form, 'live_channel': live_channel}
+        context = {'register_form':register_form}
         return render(request, 'index.html', context)
     
     def post(self, request):

@@ -64,7 +64,6 @@ class UserChannel(models.Model):
     streamer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='streamer_channel')
     start_stream = models.DateTimeField(auto_now_add=True) # Когда первый раз начал стримить на нашей площадке
     channel_status = models.CharField(choices=CURRENT_STREAM_STATUS, max_length=32, verbose_name='Текущий статус стрима', null = True, blank = True)
-    #channel_url = models.CharField(default='Ссылка на канал', unique = True, max_length=42)
     is_channel_live = models.BooleanField(default = False)
     channel_url = models.CharField(default='twitch_channel', unique = True, max_length=64)
     

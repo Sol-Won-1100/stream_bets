@@ -21,7 +21,7 @@
         <nav class="navbar" role="navigation" aria-label="main
             navigation">
             <div class="navbar-brand">
-                <a class="navbar-item" href="https://bulma.io">
+                <a class="navbar-item" href="{% url 'main_index_page' %}">
                     <h2 class="title is-size-4">STREAM-BETS.COM</h2>
                 </a>
 
@@ -41,7 +41,7 @@
                     </a>
 
                     <a class="navbar-item">
-                        Все стримы
+                        Все стримы онлайн
                     </a>
 
                     <div class="navbar-item has-dropdown
@@ -127,6 +127,148 @@
         
         <section class="main-content columns is-gapless is-fullheight">
         <!-- По дебильному кол-во колонок указывать в детях-->
+        <aside class="column is-2 is-fullheight section">
+
+    <div class="card p-2" style="overflow: hidden;">
+        <span class="ml-3">🔴 Онлайн стримы:</span>
+        {% for stream in live_channel %}
+
+        
+        <a href="">
+            <div class="card p-2" style="overflow: hidden;">
+
+                <div class="media">
+                    <div class="media-left">
+                        <figure class="image is-56x56">
+                            <img src="{% static 'img/stray228.png' %}"
+                                alt="Placeholder image">
+                        </figure>
+                    </div>
+                    <div class="media-content" style="overflow: hidden;">
+                        <p class="title is-6" style="overflow: hidden;"><a href="">{{ stream.channel_url }}</a></p>
+                        <p class="subtitle is-7" style="overflow: hidden;">Dota
+                            2 <br />
+                            {% if stream.channel_status == 'accept_bets' %}
+                                <span class="has-text-success has-text-weight-bold">Идёт приём ставок</span></p>
+                            {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </a>
+        {% endfor %}
+
+
+        
+
+
+
+
+
+
+
+    </div>
+    {% if request.user.is_authenticated %}
+    <nav class="panel p-3">
+        <p class="panel-heading">
+            Ставки
+        </p>
+
+        <div class="panel-block">
+            <h2 class="has-text-weight-bold">Ставки на игру: Dendi</h2>
+        </div>
+
+        <div class="panel-block">
+            <label class="radio">
+                <input type="radio" name="answer">
+                Победа
+            </label>
+            <br /><br />
+            <label class="radio ml-5">
+                <input type="radio" name="answer">
+                Поражение
+            </label>
+
+
+        </div>
+
+        <div class="panel-block"><span>Ставка: </span> &nbsp;&nbsp;&nbsp;
+            <div class="select is-link ml-5 is-normal">
+
+                <select>
+                    <option value="100" type="number">100</option>
+                    <option value="100" type="number">200</option>
+                    <option value="100" type="number">300</option>
+                    <option value="100" type="number">400</option>
+                    <option value="100" type="number">500</option>
+                    <option value="100" type="number">600</option>
+
+                </select>
+            </div>
+        </div>
+
+        <div class="panel-block">
+            <button class="button is-link is-outlined is-fullwidth">
+                Сделать ставку
+            </button>
+        </div>
+
+
+        <div class="panel-block">
+            <button class="button is-link is-outlined is-fullwidth">
+                Ставки сделаны
+            </button>
+        </div>
+
+
+
+
+    </nav>
+    {% else %}
+
+
+    <nav class="panel ml-3">
+        <p class="panel-heading">
+            Ставки
+        </p>
+        <div class="panel-block">
+            <h2 class="">Необходимо авторизоваться</h2>
+        </div>
+    </nav>
+    {% endif %}
+
+    <nav class="panel p-3">
+        <p class="panel-heading has-text-centered">
+            Статистика
+        </p>
+
+
+
+        <div class="panel-block">
+            <table cellpadding="0" cellspacing="0">
+                <tbody><tr>
+                        <td>Сделано ставок</td>
+                        <td> &nbsp; |&nbsp;123</td>
+                    </tr>
+                    <tr>
+                        <td>На победу</td>
+                        <td> &nbsp; |&nbsp;123</td>
+                    </tr>
+                    <tr>
+                        <td>На поражение</td>
+                        <td> &nbsp; |&nbsp;123</td>
+                    </tr>
+                    <tr>
+                        <td>Призовой фонд</td>
+                        <td><span> &nbsp; |&nbsp;27.250</span></td>
+                    </tr>
+                </tbody></table>
+        </div>
+    </nav>
+
+
+
+</aside>
         {% block content %}
         {% endblock %}
            
