@@ -39,11 +39,13 @@ class CurrentActiveBet(models.Model):
     )
     
     event_streamer = models.OneToOneField(UserChannel, on_delete=models.CASCADE, verbose_name='Стример')
-    event_open_date = models.DateTimeField(auto_now_add = True)
-    event_status = models.CharField(choices=CURRENT_EVENT_STATUS, max_length=32, verbose_name='Текущий статус')
+    event_open_date = models.DateTimeField(auto_now_add = True)  # когда была нажата кнопка "принимаем ставки"
+    event_status = models.CharField(choices=CURRENT_EVENT_STATUS, max_length=32, verbose_name='Текущий статус')  #  
     event_game = models.CharField(choices=EVENT_GAME, max_length=32, verbose_name='Игра')
     event_result = models.CharField(choices=EVENT_RESULT, max_length=32, verbose_name='Результат игры', null = True, blank = True)
     event_bet_amount = models.CharField(choices=EVENT_BET_AMOUNT, max_length=32, verbose_name='Сумма ставок', default = '100')
+    envent_finish_taking_bets_time = models.DateTimeField(blank = True, null = True)  # время когда заканчивается приём ставок
+    event_close = models.BooleanField(default = False)  #  Закрыты ли ставки
 
 
     def __str__(self):
@@ -52,6 +54,8 @@ class CurrentActiveBet(models.Model):
 
     class Meta:
         db_table = 'current_bets'
+
+   
 
 
 class CurrentUserBet(models.Model):

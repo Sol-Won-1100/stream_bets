@@ -83,8 +83,20 @@ class ChannelPage(View):
         context['channel_url'] = channel_url
         return render(request, 'channel.html', context)
     
-    #def post(self, request):
-        #pass
+    #TODO: Целый день работы над ставками  ничего больше!
+    def post(self, request, channel_url):
+        print(request.POST)
+        if 'open_bet' in request.POST:
+            print('Открыли ставки на игру')
+            return redirect('user_profile_page')
+        elif 'bet_takes' in request.POST:
+            print(f"Ставки сделаны, ждём {request.POST.get('wait_time')} секунд и закрываем")
+            return redirect('user_profile_page')
+        else:
+            return redirect('user_profile_page')
+
+            
+        
 
 
 def logoutUser(request):
