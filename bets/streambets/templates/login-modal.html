@@ -1,0 +1,64 @@
+<div class="modal" >
+  <div class="modal-background"></div>
+  <div class="modal-card" id="element_to_pop_up" style="max-width:400px;">
+    <header class="modal-card-head">
+      <p class="modal-card-title is-size-4">Авторизация</p>
+      <button class="delete close_detail" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body ">
+      <form action="" method="POST" class="" >
+            {% csrf_token %}
+            {{ form }}
+            <div class="field">
+              
+              <div class="control has-icons-left">
+                <input type="email" placeholder="Введите почту" class="input" name="username" required>
+                <span class="icon is-small is-left">
+                 <i class="fas fa-at"></i>
+                </span>
+              </div>
+            </div>
+            <div class="field">
+              
+              <div class="control has-icons-left">
+                <input type="password" placeholder="*******" class="input" name="password" required>
+                <span class="icon is-small is-left">
+                  <i class="fa fa-lock"></i>
+                </span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="" class="checkbox">
+                <input type="checkbox">
+                <span class="is-size-6">Запомнить</span>
+              </label>
+            </div>
+            <div class="field has-text-right">
+              <button type="submit" name="sign_in" class="button is-link" value="sign_in">
+                  Войти
+              </button>
+            </div>
+          </form>
+           
+    </section>
+    <footer class="modal-card-foot">
+    <a href="#">Регистрация </a>  <a href="#" class="ml-5"> Забыли пароль?</a>
+    </footer>
+  </div>
+</div>
+
+<script> 
+// login
+const auth_btn = document.querySelector('.auth_btn'); // Кнопка авторизации
+const modalBg = document.querySelector('.modal-background'); // Сама форма
+const modal = document.querySelector('.modal');  // окно
+const close_modal = document.querySelector('.close_detail') // кнопка "закрыть окно"
+
+auth_btn.addEventListener('click', () => {
+  modal.classList.add('is-active');
+})
+
+close_modal.addEventListener('click', () => {
+  modal.classList.remove('is-active');
+});
+</script>

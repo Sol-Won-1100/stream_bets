@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<aside class="column is-2 is-fullheight section">
+
+    <div class="card p-2" style="overflow: hidden;">
+        <span class="ml-3">🔴 Онлайн стримы:</span>
+
+        <a href="">
+            <div class="card p-2" style="overflow: hidden;">
+
+                <div class="media">
+                    <div class="media-left">
+                        <figure class="image is-48x48">
+                            <img src="{% static 'img/stray228.png' %}"
+                                alt="Placeholder image">
+                        </figure>
+                    </div>
+                    <div class="media-content" style="overflow: hidden;">
+                        <p class="title is-6" style="overflow: hidden;">Stray228</p>
+                        <p class="subtitle is-7" style="overflow: hidden;">Dota
+                            2 <br />
+                            <span class="has-text-success">Идёт приём ставок</span></p>
+                    </div>
+                </div>
+
+            </div>
+        </a>
+
+
+        <a href="">
+            <div class="card p-2" style="overflow: hidden;">
+
+                <div class="media">
+                    <div class="media-left">
+                        <figure class="image is-48x48">
+                            <img src="{% static 'img/stray228.png' %}"
+                                alt="Placeholder image">
+                        </figure>
+                    </div>
+                    <div class="media-content" style="overflow: hidden;">
+                        <p class="title is-6" style="overflow: hidden;">Stray228</p>
+                        <p class="subtitle is-7" style="overflow: hidden;">Dota
+                            2 <br />
+                            <span class="has-text-link"></span></p>
+
+                    </div>
+                </div>
+
+            </div>
+        </a>
+        <a href="">
+            <div class="card p-2" style="overflow: hidden;">
+
+                <div class="media">
+                    <div class="media-left">
+                        <figure class="image is-48x48">
+                            <img src="{% static 'img/stray228.png' %}"
+                                alt="Placeholder image">
+                        </figure>
+                    </div>
+                    <div class="media-content" style="overflow: hidden;">
+                        <p class="title is-6" style="overflow: hidden;">Stray228</p>
+                        <p class="subtitle is-7" style="overflow: hidden;">Dota
+                            2 <br />
+                            <span class="has-text-link"></span></p>
+
+                    </div>
+                </div>
+
+            </div>
+        </a>
+
+
+
+
+
+
+
+    </div>
+    {% if request.user.is_authenticated %}
+    <nav class="panel p-3">
+        <p class="panel-heading">
+            Ставки
+        </p>
+
+        <div class="panel-block">
+            <h2 class="has-text-weight-bold">Ставки на игру: Dendi</h2>
+        </div>
+
+        <div class="panel-block">
+            <label class="radio">
+                <input type="radio" name="answer">
+                Победа
+            </label>
+            <br /><br />
+            <label class="radio ml-5">
+                <input type="radio" name="answer">
+                Поражение
+            </label>
+
+
+        </div>
+
+        <div class="panel-block"><span>Ставка: </span> &nbsp;&nbsp;&nbsp;
+            <div class="select is-link ml-5 is-normal">
+
+                <select>
+                    <option value="100" type="number">100</option>
+                    <option value="100" type="number">200</option>
+                    <option value="100" type="number">300</option>
+                    <option value="100" type="number">400</option>
+                    <option value="100" type="number">500</option>
+                    <option value="100" type="number">600</option>
+
+                </select>
+            </div>
+        </div>
+
+        <div class="panel-block">
+            <button class="button is-link is-outlined is-fullwidth">
+                Сделать ставку
+            </button>
+        </div>
+
+
+        <div class="panel-block">
+            <button class="button is-link is-outlined is-fullwidth">
+                Ставки сделаны
+            </button>
+        </div>
+
+
+
+
+    </nav>
+    {% else %}
+
+
+    <nav class="panel ml-3">
+        <p class="panel-heading">
+            Ставки
+        </p>
+        <div class="panel-block">
+            <h2 class="">Необходимо авторизоваться</h2>
+        </div>
+    </nav>
+    {% endif %}
+
+    <nav class="panel p-3">
+        <p class="panel-heading has-text-centered">
+            Статистика
+        </p>
+
+
+
+        <div class="panel-block">
+            <table cellpadding="0" cellspacing="0">
+                <tbody><tr>
+                        <td>Сделано ставок</td>
+                        <td> &nbsp; |&nbsp;123</td>
+                    </tr>
+                    <tr>
+                        <td>На победу</td>
+                        <td> &nbsp; |&nbsp;123</td>
+                    </tr>
+                    <tr>
+                        <td>На поражение</td>
+                        <td> &nbsp; |&nbsp;123</td>
+                    </tr>
+                    <tr>
+                        <td>Призовой фонд</td>
+                        <td><span> &nbsp; |&nbsp;27.250</span></td>
+                    </tr>
+                </tbody></table>
+        </div>
+    </nav>
+
+
+
+</aside>
+
+
+<div class="column is-4 ml-2">
+    <h2 class="title is-size-4">Профиль</h2>
+    <div class="card">
+
+        <div class="card-content">
+            <div class="media">
+                <div class="media-left">
+                    <form action="" method="POST" class="p-3 hide_element"
+                        id="image_upload_form">
+                        <div class="file is-small">
+                            <label class="file-label">
+                                <input class="file-input" type="file"
+                                    name="resume">
+                                <span class="file-cta">
+                                    <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label">
+                                        Изменить...
+                                    </span>
+                                </span>
+                            </label>
+                        </div>
+
+                    </form>
+                    <figure class="image is-128x128">
+                        <img src="{{ user_profile_data.avatar.url }}"
+                            alt="Placeholder
+                            image">
+
+
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <p class="title is-5"> {{ user_profile_data.custom_username }}
+                        <a title="Изменить ник" onclick=""
+                            id="change_current_nick"
+                            class="close_change_nick_form">
+                            <i class="fa-edit fas"></i>
+                        </a>
+                        <a title="закрыть" onclick="" id="close_username"
+                            class="hide_element">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </p>
+                    <p class="subtitle is-6">
+
+                        <form action="" method="POST" class="hide_element"
+                            id="change_username_form">
+                            {% csrf_token %}
+                            <div class="field has-addons">
+                                <div class="control">
+                                    {{ edit_username_form.custom_username }}
+                                </div>
+                                <div class="control">
+                                    <button class="button is-link is-small"
+                                        id="save_new_username">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+
+                        {% if user.is_superuser == True %}
+                        <span class="tag is-warning p-2 mt-2">Администратор</span></p>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <hr class="is-size-4 has-background-warning">
+        <div class="content mt-5">
+
+            <nav class="level is-mobile">
+                <div class="level-item has-text-centered">
+                    <div class="ml-5">
+                        <p class="heading">Ставок</p>
+                        <p class="title is-5">3,456</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered ml-6">
+                    <div>
+                        <p class="heading">Побед</p>
+                        <p class="title is-5">123</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered ml-6">
+                    <div>
+                        <p class="heading">Поражений</p>
+                        <p class="title is-5">456K</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered ml-5">
+                    <div>
+                        <p class="heading">Заработано</p>
+                        <p class="title is-5">789</p>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script> 
+						 const change_btn = document.querySelector('#change_current_nick');
+						 const change_nick_form = document.querySelector('#change_username_form');
+						 const close_username_form = document.querySelector('.close_change_nick_form');
+						 const close_field_btn = document.querySelector('#close_username');
+						 const show_image_upload_form = document.querySelector('#image_upload_form');
+
+						change_btn.addEventListener('click', () => {
+   						change_nick_form.classList.remove('hide_element');
+						   show_image_upload_form.classList.remove('hide_element');
+						   
+ 						})
+
+						 change_btn.addEventListener('click', () => {
+							change_btn.classList.add('hide_element');
+							
+ 						})
+
+						 change_btn.addEventListener('click', () => {
+							change_btn.classList.add('hide_element');
+ 						})
+
+						 change_btn.addEventListener('click', () => {
+							close_field_btn.classList.remove('hide_element');
+ 						})
+
+						 close_field_btn.addEventListener('click', () => {
+							change_nick_form.classList.add('hide_element');
+							close_field_btn.classList.add('hide_element');
+							change_btn.classList.remove('hide_element');
+							show_image_upload_form.classList.add('hide_element');
+
+ 						})
+                            </script>
+{% endblock%}

@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+        <script src="{% static 'js/script.js' %}"></script>   
+        <script src="https://kit.fontawesome.com/834cba4574.js"
+            crossorigin="anonymous"></script>
+        <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}"
+            type="image/x-icon">
+        <title>{% block title %} Stream-Bets.com {% endblock %}</title>
+
+    </head>
+    <body>
+        <nav class="navbar" role="navigation" aria-label="main
+            navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="https://bulma.io">
+                    <h2 class="title is-size-4">STREAM-BETS.COM</h2>
+                </a>
+
+                <a role="button" class="navbar-burger" id="burger"
+                    aria-label="menu" aria-expanded="false"
+                    data-target="navbarBasicExample">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div class="navbar-menu" id="nav-links">
+                <div class="navbar-start">
+                    <a class="navbar-item">
+                        Главная
+                    </a>
+
+                    <a class="navbar-item">
+                        Все стримы
+                    </a>
+
+                    <div class="navbar-item has-dropdown
+                        is-hoverable">
+                        <a class="navbar-link">
+                            Информация
+                        </a>
+
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item">
+                                About
+                            </a>
+                            <a class="navbar-item">
+                                Jobs
+                            </a>
+                            <a class="navbar-item">
+                                Contact
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item">
+                                Report an issue
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navbar-end id="nav-links"">
+                    <div class="navbar-item">
+                        {% if request.user.is_authenticated %}
+                        <div class="columns is-mobile">
+                            <div class="column">
+                                <a class="button is-warning-light" href="#">
+                                    <i class="fas fa-coins fas has-text-dark">
+                                        <span
+                                            class="is-size-6 has-text-dark">&nbsp;{{ user_profile_data.user_balance }}</span>
+                                    </i>
+
+                                </a>
+                            </div>
+
+                            <div class="column">
+                                <a class="button is-success is-outlined"
+                                    href="#">
+                                    <i class="far fa-bell fa-lg"></i>
+
+                                </a>
+
+                            </div>
+
+
+                            <div class="column">
+                                <a class="button is-info is-outlined" href="{% url 'user_profile_page' %}">
+                                    <i class="far fa-user-circle fa-lg"></i>
+                                </a>
+
+
+                            </div>
+                            <div class="column">
+                                <a class="button is-danger is-outlined" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt"></i>
+
+                                </a>
+                            </div>
+
+
+                        </div>
+                        {% else %}
+                        <a class="button is-link is-outlined ml-2 auth_btn">
+                            
+                            Войти
+                        </a>
+
+                        <a class="button is-link ml-2 has-text-weight-bold"
+                            id="register_btn">
+                            Регистрация
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        
+        <section class="main-content columns is-gapless is-fullheight">
+        <!-- По дебильному кол-во колонок указывать в детях-->
+        {% block content %}
+        {% endblock %}
+           
+        </div>
+
+        {% if not request.user.is_authenticated %}
+        {% include 'login-modal.html' %}
+        {% include 'register-modal.html' %}
+        {% else %}
+
+        {% endif %}
+    <script> 
+        // burger menu
+const burgerIcon  = document.querySelector('#burger');
+const navbarMenu  = document.querySelector('#nav-links');
+
+burgerIcon.addEventListener('click', () => {
+	navbarMenu.classList.toggle('is-active');
+});
+
+    </script>
+    </body>
+</html>

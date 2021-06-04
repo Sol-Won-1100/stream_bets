@@ -1,0 +1,108 @@
+<div class="modal register-modal">
+    <div class="modal-background register-modal-background"></div>
+    <div class="modal-card" id="element_to_pop_up" style="max-width:400px;">
+        <header class="modal-card-head">
+            <p class="modal-card-title is-size-4">Регистрация</p>
+            <button class="delete close_register-window" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form action="" method="POST" class="">
+                {% csrf_token %}
+                <div class="field">
+                    <p class="control has-icons-left has-icons-right">
+                        {{register_form.email}}
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+
+                    </p>
+                </div>
+
+
+                <div class="field">
+                    <p class="control has-icons-left has-icons-right">
+                        {{register_form.username}}
+                        <span class="icon is-left">
+                            <i class="fas fa-user"></i>
+                        </span>
+
+                    </p>
+                </div>
+
+                <div class="field">
+                    <p class="control has-icons-left has-icons-right">
+                        {{ register_form.password1 }}
+                        <span class="icon is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+
+                    </p>
+                </div>
+
+                <div class="field">
+                    <p class="control has-icons-left has-icons-right">
+                        {{register_form.password2}}
+                        <span class="icon is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+
+                    </p>
+                </div>
+
+                <div class="field">
+                    <input type='checkbox' class='ios8-switch ios8-switch-lg
+                        is_streamer' id='checkbox-3'>
+                    <label for='checkbox-3'>Я стример</label>
+                    <br>
+
+                </div>
+
+
+                <div class="field">
+                    <div class="control">
+                        <input class="input" type="text" placeholder="Ссылка на
+                            канал твич" id="channel_input_field"
+                            style="display:none;">
+                    </div>
+                    <br>
+
+                </div>
+
+
+
+
+
+                <button class="button is-link" type="submit" name="sign_up"
+                    value="sign_up">Регистрация</button>
+
+
+
+
+            </form>
+
+        </section>
+        <footer class="modal-card-foot">
+
+            Есть аккаунт?<a href="" class="is-link ml-5
+                is-size-6" style="max-width:130px;"> Войти</a>
+        </footer>
+    </div>
+</div>
+
+<script> 
+
+
+// register
+const reg_btn = document.querySelector('#register_btn'); // Кнопка registration
+const reg_modal_bg = document.querySelector('.register-modal-background'); // Сама форма
+const reg_modal = document.querySelector('.register-modal');  // окно
+const close_reg_modal = document.querySelector('.close_register-window') // кнопка "закрыть окно"
+
+ reg_btn.addEventListener('click', () => {
+  reg_modal.classList.add('is-active');
+})
+
+close_reg_modal.addEventListener('click', () => {
+  reg_modal.classList.remove('is-active');
+});
+</script>
