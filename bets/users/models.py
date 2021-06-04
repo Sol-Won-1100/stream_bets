@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.shortcuts import reverse
 from .managers import CustomUserManager
 
 
@@ -67,7 +68,8 @@ class UserChannel(models.Model):
     is_channel_live = models.BooleanField(default = False)
     channel_url = models.CharField(default='twitch_channel', unique = True, max_length=64)
     
-    
+    def get_absolute_url(self):
+        return reverse('channel', kwargs={'channel_url': self.channel_url})
 
     class Meta:
         db_table = 'user_channel'

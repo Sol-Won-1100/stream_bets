@@ -3,7 +3,7 @@ from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
-from users.models import CustomUser
+from users.models import CustomUser, UserChannel
 from users.forms import CustomUserCreationForm, UsernameForm
 from .get_data import get_main_data
 
@@ -68,6 +68,23 @@ class UserProfile(View):
                 current_user.custom_username = new_username
                 current_user.save()
             return redirect('user_profile_page')
+
+class ChannelPage(View):
+    def get(self, request, channel_url):
+        uid = request.user.id
+        channel_info = UserChannel.objects.filter(channel_url = channel_url).select_related('streamer')
+        context = {}
+        for i in channel_info:
+            if i.streamer.id == uid:
+                context['can_admin'] = True
+                context[''] = 'aaa'
+                
+        
+        context['channel_url'] = channel_url
+        return render(request, 'channel.html', context)
+    
+    #def post(self, request):
+        #pass
 
 
 def logoutUser(request):

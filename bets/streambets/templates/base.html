@@ -145,7 +145,7 @@
                         </figure>
                     </div>
                     <div class="media-content" style="overflow: hidden;">
-                        <p class="title is-6" style="overflow: hidden;"><a href="">{{ stream.channel_url }}</a></p>
+                        <p class="title is-6" style="overflow: hidden;"><a href="{{ stream.get_absolute_url  }}">{{ stream.channel_url }}</a></p>
                         <p class="subtitle is-7" style="overflow: hidden;">Dota
                             2 <br />
                             {% if stream.channel_status == 'accept_bets' %}
@@ -196,12 +196,16 @@
             <div class="select is-link ml-5 is-normal">
 
                 <select>
-                    <option value="100" type="number">100</option>
-                    <option value="100" type="number">200</option>
-                    <option value="100" type="number">300</option>
-                    <option value="100" type="number">400</option>
-                    <option value="100" type="number">500</option>
-                    <option value="100" type="number">600</option>
+                    <option value="100" type="number" selected>100</option>
+        <option value="200" type="number">200</option>
+        <option value="300" type="number">300</option>
+        <option value="400" type="number">400</option>
+        <option value="500" type="number">500</option>
+        <option value="600" type="number">600</option>
+        <option value="700" type="number">700</option>
+        <option value="800" type="number">800</option>
+        <option value="900" type="number">900</option>
+        <option value="1000" type="number">1000</option>
 
                 </select>
             </div>
