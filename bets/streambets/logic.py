@@ -1,12 +1,17 @@
 from datetime import date, datetime, timedelta
 from django.utils import timezone
-import pytz
-from users.models import UserChannel
 
+
+from users.models import UserChannel
+from .get_data import get_main_data
+from betting.models import CurrentUserBet
 
 def get_current_channel_info(uid, channel_url):
     channel_data = UserChannel.objects.get(channel_url = channel_url)
     data = {}
+    data['bet_amount'] = channel_data.event_bet_amount
+    data['streamer_name'] = channel_data.channel_url
+
     if channel_data.streamer.id == uid:
         data['is_admin'] = True
     else:
@@ -68,6 +73,7 @@ def update_current_channel_info(uid, channel):
             #  В процессе
             if current_channel.event_finish_at < datetime.now():
                 print('Стример не завершил событие, возвращаем ставки')
+                UserChannel.objects.filter(channel_url = channel).update(channel_status = 'bets_are_closed')
 
     except UserChannel.DoesNotExist:
         return False
@@ -80,7 +86,8 @@ def create_bet(uid, bet_amount):
             # Можно открыть ставки
             UserChannel.objects.filter(streamer = uid).update(channel_status = 'accept_bets', 
             event_finish_accepting_at = datetime.now() + timedelta(minutes=30), 
-            event_finish_at = datetime.now() + timedelta(minutes=180))
+            event_finish_at = datetime.now() + timedelta(minutes=180),
+            event_bet_amount = bet_amount)
 
             return True
             
@@ -102,5 +109,23 @@ def start_event(uid, wait_sec):
             return False 
     except UserChannel.DoesNotExist:
         return False
+
+
+def user_do_bet(uid, bet_type, channel):
+    """
+    Работа со ставками пользователей
+    """
+    current_user_data = get_main_data(uid)
+    try:
+        current_channel_data = UserChannel.objects.get(channel_url = channel)
+        if int(current_user_data['user_balance']) >= int(current_channel_data.event_bet_amount) and current_channel_data.event_close_bet_at > datetime.now():
+            CurrentUserBet.objects.create(user_event_bet_id = current_channel_data.id, user_id = uid, bet_amount = current_channel_data.event_bet_amount,
+            user_bet_type = bet_type)
+            return True
+        else:
+            return False
+    except UserChannel.DoesNotExist:
+        return False
+
 
    

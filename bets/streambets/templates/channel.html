@@ -81,6 +81,7 @@
     </ul>
 </aside>
 
+
 <script>
     let timeoutHandle
 
@@ -102,3 +103,11 @@ function count() {
 count()
 </script>
 {% endblock %}
+
+
+{% block betblock %}
+    {% if channel_data.is_bet_opened or channel_data.bets_are_made  and request.user.is_authenticated %}
+        {% include 'bet/user_bet_block.html' %}
+    {% endif %}
+{% endblock %}
+<script>
