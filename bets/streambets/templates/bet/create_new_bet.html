@@ -1,0 +1,31 @@
+
+<form method="POST" action="">
+    {% csrf_token %}
+    <div class="panel-block">
+        <span class="is-size-6"><i class="fas fa-coins fa-lg"></i>
+            &nbsp;&nbsp;Ставка : </span>
+        <div class="select is-link ml-5 is-normal">
+
+            <select>
+                <option value="100" type="number" selected>100</option>
+                <option value="200" type="number"> 200</option>
+                <option value="300" type="number">300</option>
+                <option value="400" type="number">400</option>
+                <option value="500" type="number">500</option>
+                <option value="600" type="number">600</option>
+                <option value="700" type="number">700</option>
+                <option value="800" type="number">800</option>
+                <option value="900" type="number">900</option>
+                <option value="1000" type="number">1000</option>
+
+            </select>
+        </div>
+    </div>
+
+    <div class="panel-block">
+        <button type="submit" name="open_bet" class="button is-info
+            is-fullwidth">
+            Принимаем ставки
+        </button>
+    </div>
+</form>

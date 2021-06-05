@@ -59,7 +59,35 @@ class UserChannel(models.Model):
     """
     CURRENT_STREAM_STATUS = (
         ('accept_bets', 'Приём ставок'),
-        ('bets_are_made', 'Ставки сделаны')
+        ('bets_are_made', 'Ставки сделаны'),
+        ('bets_are_closed', 'Ставки не принимаются'),
+        ('bets_in_process', 'Идёт игра'),
+
+    )
+
+    EVENT_RESULT = (
+        ('win', 'Победа'),
+        ('lost', 'Поражение'),
+        ('canceled', 'Отменить')
+
+    )
+    
+    EVENT_GAME = (
+        ('DOTA2', 'DOTA 2'),
+        ('CS:GO', 'CS:GO')
+    )
+
+    EVENT_BET_AMOUNT = (
+        ('100', '100'),
+        ('200', '200'),
+        ('300', '400'),
+        ('400', '400'),
+        ('500', '500'),
+        ('600', '600'),
+        ('700', '700'),
+        ('800', '800'),
+        ('900', '900'),
+        ('1000', '1000')
     )
     
     streamer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='streamer_channel')
@@ -67,6 +95,17 @@ class UserChannel(models.Model):
     channel_status = models.CharField(choices=CURRENT_STREAM_STATUS, max_length=32, verbose_name='Текущий статус стрима', null = True, blank = True)
     is_channel_live = models.BooleanField(default = False)
     channel_url = models.CharField(default='twitch_channel', unique = True, max_length=64)
+
+    # работа со ставками
+    event_open_at = models.DateTimeField(auto_now = True)  # когда была нажата кнопка "принимаем ставки"
+    event_bet_amount = models.CharField(choices=EVENT_BET_AMOUNT, max_length=32, verbose_name='Сумма ставок', default = '100')
+    event_finish_accepting_at = models.DateTimeField(blank = True, null = True)  # 30 минут с момента откртия до нажатия кнопки "ставки сделаны"
+
+    event_close_bet_at = models.DateTimeField(blank = True, null = True)  # Во сколько закроется datetime + N-sec
+
+    event_result = models.CharField(choices=EVENT_RESULT, max_length=32, verbose_name='Результат игры', null = True, blank = True)
+    event_finish_at = models.DateTimeField(blank = True, null = True) # время до закрытия ставки (3 часа)
+
     
     def get_absolute_url(self):
         return reverse('channel', kwargs={'channel_url': self.channel_url})

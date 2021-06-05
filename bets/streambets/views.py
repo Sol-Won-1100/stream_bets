@@ -6,7 +6,8 @@ from django.contrib import messages
 from users.models import CustomUser, UserChannel
 from users.forms import CustomUserCreationForm, UsernameForm
 from .get_data import get_main_data
-
+from .logic import get_current_channel_info
+from betting.models import CurrentActiveBet
 
 class IndexPage(View):
     def get(self, request):
@@ -72,13 +73,10 @@ class UserProfile(View):
 class ChannelPage(View):
     def get(self, request, channel_url):
         uid = request.user.id
-        channel_info = UserChannel.objects.filter(channel_url = channel_url).select_related('streamer')
+        
         context = {}
-        for i in channel_info:
-            if i.streamer.id == uid:
-                context['can_admin'] = True
-                context[''] = 'aaa'
-                
+        context['channel_data'] = get_current_channel_info(uid, channel_url)
+
         
         context['channel_url'] = channel_url
         return render(request, 'channel.html', context)
@@ -87,7 +85,7 @@ class ChannelPage(View):
     def post(self, request, channel_url):
         print(request.POST)
         if 'open_bet' in request.POST:
-            print('Открыли ставки на игру')
+            #проверяем 
             return redirect('user_profile_page')
         elif 'bet_takes' in request.POST:
             print(f"Ставки сделаны, ждём {request.POST.get('wait_time')} секунд и закрываем")

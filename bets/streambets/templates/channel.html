@@ -33,109 +33,39 @@
 
 
 <aside class="column is-2 is-fullheight">
-    {% if can_admin %}
-</div>
-
-
+{% if channel_data.is_admin %}
 <nav class="panel pl-1">
-    <p class="panel-heading">
-        Управление ставками
-    </p>
-    <div class="box" >
-        <h2 class="has-text-centered is-size-5">Управление ставками</h2>
-        <form method="POST" action="" >
-            {% csrf_token %}
-            <div class="panel-block">
-                <span class="is-size-6"><i class="fas fa-coins fa-lg"></i>
-                    &nbsp;&nbsp;Ставка : </span>
-                <div class="select is-link ml-5 is-normal">
-    
-                    <select>
-                        <option value="100" type="number" selected>100</option>
-                        <option value="200" type="number"> 200</option>
-                        <option value="300" type="number">300</option>
-                        <option value="400" type="number">400</option>
-                        <option value="500" type="number">500</option>
-                        <option value="600" type="number">600</option>
-                        <option value="700" type="number">700</option>
-                        <option value="800" type="number">800</option>
-                        <option value="900" type="number">900</option>
-                        <option value="1000" type="number">1000</option>
-    
-                    </select>
-                </div>
-            </div>
-    
-            <div class="panel-block">
-                <button type="submit" name="open_bet"  class="button is-info  is-fullwidth">
-                    Принимаем ставки
-                </button>
-            </div>
-        
-        </form>
+    <p class="panel-heading">Управление ставками</p>
+        {% if channel_data.not_started %}
+            {% include 'bet/create_new_bet.html' %}
+        {% endif %}
 
-        <form method="POST" action="" >
-            {% csrf_token %}
-            <div class="panel-block">
-                
-                    <p class="control has-icons-left">
-                        <input class="input is-normal" type="number" name="wait_time"  value="60" placeholder="Время пока можно поставить">
-                      <span class="icon is-small is-left">
-                        <i class="far fa-clock"></i>
-                      </span>
-                    </p>
-                  
-            </div>            
-            <div class="panel-block">
-                <button type="submit" name="bet_takes" class="button  is-link is-fullwidth">
-                    Ставки сделаны
-                </button>
-            </div>
-        </form>
-</nav>
+        {% if channel_data.is_bet_opened %}
+        <h2 class="title is-size-6 has-text-left ml-5 mt-2">Открыт приём ставок</h2>
+            <span class="is-size-7 has-text-centered ml-5">Начать событие не позднее:</span>
+            <span class="tag" id="timer">{{ channel_data.open_until }}</span>
+            {% include 'bet/opened_bet.html' %}
+        {% endif %}
 
-<!-- Показываем только если есть текущие ставки -->
-<nav class="panel pl-1 has-text-centered">
-    <p class="panel-heading">
-        Расчитать исход
-    </p>
+        {% if channel_data.bets_are_made %}
+            <h2 class="title is-size-6 has-text-left ml-5 mt-2">Ставки сделаны</h2>
+            <span class="is-size-7 has-text-centered ml-5">Приём закроется через:</span><span class="tag" id="timer">{{ channel_data.event_close_timer }}</span>
+        {% endif %}
 
-    <form method="POST" action="" name='process_bet'>
 
-       <div class="control p-2">
-  <label class="radio">
-    <input type="radio" value="win" name="answer">
-    Победа
-  </label>
-  <label class="radio">
-    <input type="radio" value="lose" name="answer">
-    Поражение
-  </label>
-</div>
-           
+        {% if channel_data.in_process %}
             
 
+            {% include 'bet/finish-event.html' %}
+        {% endif %}
 
-        </div>
-
-
+    
+    <div class="box" >
         
-
-        <div class="panel-block">
-        <button type="submit" class="button is-success is-fullwidth" name='bet_finished'>
-            Расчитать
-        </button>
-    </div>
-        
-    <div class="panel-block">
-        <button type="submit" class="button is-dark is-fullwidth" name='prevent_bet'>
-            Отменить ставку
-        </button>
-    </div>
-    </form>
-
 </nav>
-    {% endif %}
+{% endif %}
+
+    
     <ul class="menu-list">
 
 
@@ -150,4 +80,30 @@
         </li>
     </ul>
 </aside>
+
+<script>
+    let timeoutHandle
+
+function count() {
+  const startTime = timer.innerHTML
+  const pieces = startTime.split(':')
+  const time = new Date()
+  time.setHours(pieces[0])
+  time.setMinutes(pieces[1])
+  time.setSeconds(pieces[2])
+  const timedif = new Date(time.valueOf() - 1000)
+  const newtime = timedif.toTimeString().split(' ')[0]
+  const isDead = newtime.match(/\d/g).every(n => +n === 0)
+  timer.innerHTML = newtime
+  if (!isDead) {
+    timeoutHandle = setTimeout(count, 1000)	
+  } else {
+    const img = document.createElement('img')
+    img.src = 'https://i.postimg.cc/7Yc4LHND/wasted.jpg'
+    timer.appendChild(img)
+    clearTimeout(timeoutHandle)
+  }
+}
+count()
+</script>
 {% endblock %}
