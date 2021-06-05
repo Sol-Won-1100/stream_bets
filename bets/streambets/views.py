@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect 
 from django.views import View
+from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.http import Http404
 
 from users.models import CustomUser, UserChannel
 from users.forms import CustomUserCreationForm, UsernameForm
 from .get_data import get_main_data
-from .logic import get_current_channel_info
+from .logic import get_current_channel_info, update_current_channel_info, create_bet, start_event
 from betting.models import CurrentActiveBet
 
 class IndexPage(View):
@@ -73,26 +75,31 @@ class UserProfile(View):
 class ChannelPage(View):
     def get(self, request, channel_url):
         uid = request.user.id
-        
+        update_current_channel_info(uid, channel_url)
         context = {}
         context['channel_data'] = get_current_channel_info(uid, channel_url)
-
+        #raise Http404
         
         context['channel_url'] = channel_url
         return render(request, 'channel.html', context)
     
     #TODO: Целый день работы над ставками  ничего больше!
     def post(self, request, channel_url):
+        uid = request.user.id
         print(request.POST)
         if 'open_bet' in request.POST:
-            #проверяем 
-            return redirect('user_profile_page')
-        elif 'bet_takes' in request.POST:
-            print(f"Ставки сделаны, ждём {request.POST.get('wait_time')} секунд и закрываем")
-            return redirect('user_profile_page')
-        else:
-            return redirect('user_profile_page')
+            #Запрос на открытие ставки
+            print(int(request.POST.get('bet_amount')))
+            status  = create_bet(uid, int(request.POST.get('bet_amount')))
 
+            return HttpResponseRedirect(request.path_info)
+            #return redirect('user_profile_page')
+        elif 'bet_takes' in request.POST:
+            start_event(uid, int(request.POST.get('wait_time')))
+            print(f"Ставки сделаны, ждём {request.POST.get('wait_time')} секунд и закрываем")
+            return HttpResponseRedirect(request.path_info)
+        else:
+            return HttpResponseRedirect(request.path_info)
             
         
 

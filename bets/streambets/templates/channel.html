@@ -54,6 +54,8 @@
 
 
         {% if channel_data.in_process %}
+        <span class="is-size-7 has-text-centered ml-5">Время на расчёт результата:</span><span class="tag" id="timer">{{ channel_data.event_finish_timer }}</span>
+        
             {% include 'bet/finish-event.html' %}
         {% endif %}
 
@@ -95,12 +97,7 @@ function count() {
   timer.innerHTML = newtime
   if (!isDead) {
     timeoutHandle = setTimeout(count, 1000)	
-  } else {
-    const img = document.createElement('img')
-    img.src = 'https://i.postimg.cc/7Yc4LHND/wasted.jpg'
-    timer.appendChild(img)
-    clearTimeout(timeoutHandle)
-  }
+  } 
 }
 count()
 </script>
