@@ -1,8 +1,8 @@
 from datetime import date, datetime, timedelta
 from django.utils import timezone
+from django.db.models import F
 
-
-from users.models import UserChannel
+from users.models import CustomUser, UserChannel
 from .get_data import get_main_data
 from betting.models import CurrentUserBet
 
@@ -16,7 +16,7 @@ def get_current_channel_info(uid, channel_url):
         data['is_admin'] = True
     else:
         data['is_viewer'] = True
-        return False
+        
     # Если событие не создано и юзер админ канала
     if channel_data.channel_status == 'bets_are_closed' and channel_data.streamer.id == uid:
         data['not_started'] = True
@@ -30,7 +30,7 @@ def get_current_channel_info(uid, channel_url):
         # через сколько нужно закрыть приём и нажать "ставки сделаны"
         data['open_until'] = channel_data.event_finish_accepting_at.replace(microsecond=0) - datetime.now().replace(microsecond=0)
         return data
-
+        
     #ставки сделаны
     if channel_data.channel_status == 'bets_are_made':
         data['bets_are_made'] = True
@@ -49,7 +49,8 @@ def get_current_channel_info(uid, channel_url):
         data['event_finish_timer'] = channel_data.event_finish_at.replace(microsecond=0) - datetime.now().replace(microsecond=0)
         return data
     data['channel_url'] = channel_data.channel_url
-
+    
+    print("CURRENT DATA",data)
     return data
     
 
@@ -121,11 +122,37 @@ def user_do_bet(uid, bet_type, channel):
         if int(current_user_data['user_balance']) >= int(current_channel_data.event_bet_amount) and current_channel_data.event_close_bet_at > datetime.now():
             CurrentUserBet.objects.create(user_event_bet_id = current_channel_data.id, user_id = uid, bet_amount = current_channel_data.event_bet_amount,
             user_bet_type = bet_type)
+            CustomUser.objects.filter(id = uid).update(balance = F('balance') - int(current_channel_data.event_bet_amount))
             return True
         else:
             return False
     except UserChannel.DoesNotExist:
         return False
+
+
+def get_bet_stats(channel):
+    """
+    Текущая статистика по ставкам
+    """
+    
+    try:
+        current_channel_data = UserChannel.objects.get(channel_url = channel)
+        #current_channel_data.id
+        all_bets = CurrentUserBet.objects.filter(user_event_bet_id = current_channel_data.id)
+        win_bet = 0
+        lost_bet = 0
+        for i in all_bets:
+            if i.user_bet_type == 'win':
+                win_bet += 1
+            if i.user_bet_type == 'lost':
+                lost_bet += 1
+        print({'win_bet': win_bet, 'lost_bet': lost_bet, 'total_bet': all_bets.count()})
+
+        return {'win_bet': win_bet, 'lost_bet': lost_bet, 'total_bet': all_bets.count()}
+    except UserChannel.DoesNotExist:
+        print('except')
+        return False
+    
 
 
    

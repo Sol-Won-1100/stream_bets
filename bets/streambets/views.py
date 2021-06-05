@@ -8,7 +8,7 @@ from django.http import Http404
 from users.models import CustomUser, UserChannel
 from users.forms import CustomUserCreationForm, UsernameForm
 from .get_data import get_main_data
-from .logic import get_current_channel_info, update_current_channel_info, create_bet, start_event, user_do_bet
+from .logic import get_current_channel_info, update_current_channel_info, create_bet, start_event, user_do_bet, get_bet_stats
 from betting.models import CurrentUserBet
 
 class IndexPage(View):
@@ -78,15 +78,18 @@ class ChannelPage(View):
         update_current_channel_info(uid, channel_url)
         context = {}
         context['channel_data'] = get_current_channel_info(uid, channel_url)
+        print(context['channel_data'])
         #raise Http404
-        
+        context['user_profile_data'] = get_main_data(uid)
+        context['bets_stats'] = get_bet_stats(channel_url)
         context['channel_url'] = channel_url
         return render(request, 'channel.html', context)
 
     #TODO: Целый день работы над ставками  ничего больше!
     def post(self, request, channel_url):
         uid = request.user.id
-        print(request.POST)
+        
+        #print(request.POST)
         if 'open_bet' in request.POST:
             #Запрос на открытие ставки
             print(int(request.POST.get('bet_amount')))
