@@ -53,9 +53,11 @@ def update_current_channel_info(uid, channel):
         current_channel = UserChannel.objects.get(channel_url = channel)
         if current_channel.channel_status == 'accept_bets':
             # открыли приём ставок
-            
-            if current_channel.event_finish_accepting_at < datetime.now():
-                print('Вернули ставки')
+            try:
+                if current_channel.event_finish_accepting_at < datetime.now():
+                    print('Вернули ставки')
+            except TypeError:
+                pass
         
         elif current_channel.channel_status == 'bets_are_made':
             #ставки сделаны
