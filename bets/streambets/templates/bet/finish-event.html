@@ -1,23 +1,21 @@
 <form method="POST" action="" name='process_bet'>
         {% csrf_token %}
-       <div class="control p-2">
-  <label class="radio">
-    <input type="radio" value="win" name="answer">
-    Победа
-    <br>
-     <input type="radio" value="lose" name="lose">
-    Поражение
-  </label>
-  
-</div>
-
+        <div class="panel-block">
+            <h2 class="title is-size-6">Рассчитать результат события</h2>:
+        </div>
+        <div class="panel-block">
+            <button type="submit" class="button is-success is-fullwidth" name='bet_win'>
+                Победа
+            </button>
         </div>
 
         <div class="panel-block">
-        <button type="submit" class="button is-success is-fullwidth" name='bet_finished'>
-            Расчитать
-        </button>
-    </div>
+            <button type="submit" class="button is-danger is-fullwidth" name='bet_win'>
+                Поражение
+            </button>
+        </div>
+
+        
         
     <div class="panel-block">
         <button type="submit" class="button is-dark is-fullwidth" name='prevent_bet'>

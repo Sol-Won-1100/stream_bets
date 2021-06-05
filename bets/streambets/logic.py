@@ -10,6 +10,7 @@ def get_current_channel_info(uid, channel_url):
     if channel_data.streamer.id == uid:
         data['is_admin'] = True
     else:
+        data['is_viewer'] = True
         return False
     # Если событие не создано и юзер админ канала
     if channel_data.channel_status == 'bets_are_closed' and channel_data.streamer.id == uid:
@@ -40,10 +41,6 @@ def get_current_channel_info(uid, channel_url):
     if channel_data.channel_status == 'bets_in_process':
         data['in_process'] = True
         return data
-    
-    
-        
-
     data['channel_url'] = channel_data.channel_url
 
     return data
