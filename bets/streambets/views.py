@@ -8,7 +8,7 @@ from django.http import Http404
 from users.models import CustomUser, UserChannel
 from users.forms import CustomUserCreationForm, UsernameForm
 from .get_data import get_main_data
-from .logic import get_current_channel_info, update_current_channel_info, create_bet, start_event, user_do_bet, get_bet_stats
+from .logic import get_current_channel_info, update_current_channel_info, create_bet, start_event, user_do_bet, get_bet_stats, calculate_bets
 from betting.models import CurrentUserBet
 
 class IndexPage(View):
@@ -99,7 +99,11 @@ class ChannelPage(View):
             bet_type = str(request.POST.get('bet_type'))
             user_do_bet(uid, bet_type, channel_url)
             return HttpResponseRedirect(request.path_info)
-        elif 'calculate_event' in request.POST:
+        elif 'bet_win' in request.POST:
+            calculate_bets(uid, channel_url, 'win')
+            print('bet_win')
+            return redirect('user_profile_page')
+        elif 'bet_lost' in request.POST:
             pass
             
         

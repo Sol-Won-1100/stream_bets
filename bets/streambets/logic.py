@@ -1,6 +1,9 @@
 from datetime import date, datetime, timedelta
 from django.utils import timezone
 from django.db.models import F
+from django.db.models import Sum
+from django.db.models import Count
+
 
 from users.models import CustomUser, UserChannel
 from .get_data import get_main_data
@@ -163,6 +166,31 @@ def get_bet_stats(channel):
     except UserChannel.DoesNotExist:
         print('except')
         return False
-    
 
 
+def calculate_bets(uid, channel, result):
+    #CurrentUserBet
+    current_channel_data = UserChannel.objects.get(channel_url = channel)
+    if current_channel_data.streamer_id == uid:
+        print(f'Канал действительно принадлежит стримеру {current_channel_data.id}')
+        if result == 'win':
+            winners = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id, user_bet_type='win').select_related('user')
+            total_coins = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).aggregate(Sum('bet_amount'))
+            total_coins = total_coins['bet_amount__sum'] 
+            streamer_awards = (total_coins * 10 / 100)
+            fond = (total_coins - streamer_awards) 
+            users_average_awards = int(fond / winners.count())
+            
+            #for i in winners:
+                #print(i.user_id)
+        
+        
+        p = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id, user_bet_type='win').annotate(Count('user_id', 
+                                         distinct=True))
+        
+        print(p)
+        for i in p:
+            print(i.bet_amount)
+            CustomUser.objects.filter(id=i.user_id).update(balance = F('balance') + i.bet_amount)
+            print(f"Выдали выиграшь({i.bet_amount}) юзеру с id: {i.user_id}")
+        
