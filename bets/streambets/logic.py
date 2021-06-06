@@ -11,7 +11,7 @@ def get_current_channel_info(uid, channel_url):
     data = {}
     data['bet_amount'] = channel_data.event_bet_amount
     data['streamer_name'] = channel_data.channel_url
-
+    data['channel_bet_amount'] = channel_data.event_bet_amount
     if channel_data.streamer.id == uid:
         data['is_admin'] = True
     else:
@@ -146,7 +146,6 @@ def get_bet_stats(channel):
     """
     Текущая статистика по ставкам
     """
-    
     try:
         current_channel_data = UserChannel.objects.get(channel_url = channel)
         #current_channel_data.id
@@ -167,4 +166,3 @@ def get_bet_stats(channel):
     
 
 
-   

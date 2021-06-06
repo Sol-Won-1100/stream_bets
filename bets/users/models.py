@@ -73,7 +73,7 @@ class UserChannel(models.Model):
     )
     
     EVENT_GAME = (
-        ('DOTA2', 'DOTA 2'),
+        ('DOTA 2', 'DOTA 2'),
         ('CS:GO', 'CS:GO')
     )
 
@@ -115,5 +115,7 @@ class UserChannel(models.Model):
 
     def __str__(self):
         return self.channel_url
+
+    
 
     

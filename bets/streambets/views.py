@@ -99,6 +99,8 @@ class ChannelPage(View):
             bet_type = str(request.POST.get('bet_type'))
             user_do_bet(uid, bet_type, channel_url)
             return HttpResponseRedirect(request.path_info)
+        elif 'calculate_event' in request.POST:
+            pass
             
         
 

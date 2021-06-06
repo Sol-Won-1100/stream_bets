@@ -1,6 +1,23 @@
+{% if channel_data.is_admin %}
+{% else %}
 
+
+        {% if channel_data.bets_are_made %}
+            <h2 class="title is-size-6 has-text-left ml-5 mt-2">Ставки сделаны</h2>
+            <span class="is-size-7 has-text-centered ml-5">Приём закроется через:</span><span class="tag" id="timer">{{ channel_data.event_close_timer }}</span>
+        {% endif %}
+
+    
+        
     <form method="POST" action="">
+    {% if channel_data.is_bet_opened %}
+    <span class="tag is-warning is-size-6 has-text-centered p-2 ml-2">Открыт приём ставок</span>
+        
+            
+        
+        {% endif %}
     {% csrf_token %}
+    
     <nav class="panel p-3">
         <p class="panel-heading">
             Ставки
@@ -13,6 +30,8 @@
                 </span>
              </h2>
         </div>
+
+        
 
         <div class="panel-block">
             Сумма ставки: <i class="fas fa-coins fas has-text-dark ml-2">
@@ -31,13 +50,14 @@
                 </select>
             </div>
         </div>
-
+        {% if channel_data.channel_bet_amount > user_profile_data.user_balance %}
+        {% else %}
         <div class="panel-block">
             <button type="submit" class="button is-link is-outlined is-fullwidth">
                 Сделать ставку
             </button>
         </div>
-
+        {% endif %}
 
         
 
@@ -46,6 +66,6 @@
 
     </nav>
     </form>
-
+{% endif %}
 
     
