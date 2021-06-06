@@ -50,7 +50,7 @@ def get_current_channel_info(uid, channel_url):
         return data
     data['channel_url'] = channel_data.channel_url
     
-    print("CURRENT DATA",data)
+    #print("CURRENT DATA",data)
     return data
     
 
@@ -98,10 +98,11 @@ def create_bet(uid, bet_amount):
 def start_event(uid, wait_sec):
     try:
         current_channel = UserChannel.objects.get(streamer = uid)
-        if current_channel.channel_status  == 'accept_bets':
+        #  Можно нажать "ставки сделаны" только если таймер 30 минутный не вышел
+        if current_channel.channel_status  == 'accept_bets' and current_channel.event_finish_accepting_at > datetime.now():
             # Можно открыть ставки
             UserChannel.objects.filter(streamer = uid).update(channel_status = 'bets_are_made', 
-            event_finish_accepting_at = datetime.now() + timedelta(minutes=30), 
+            event_finish_accepting_at = datetime.now(), 
             event_close_bet_at = datetime.now() + timedelta(seconds=wait_sec)
             )
 
@@ -116,10 +117,21 @@ def user_do_bet(uid, bet_type, channel):
     """
     Работа со ставками пользователей
     """
+    
     current_user_data = get_main_data(uid)
     try:
         current_channel_data = UserChannel.objects.get(channel_url = channel)
-        if int(current_user_data['user_balance']) >= int(current_channel_data.event_bet_amount) and current_channel_data.event_close_bet_at > datetime.now():
+        if current_channel_data.streamer_id == uid:
+            print('you cannot bet on youself')
+            return False
+        if int(current_user_data['user_balance']) >= int(current_channel_data.event_bet_amount)  \
+            and (current_channel_data.event_close_bet_at > datetime.now()):
+            CurrentUserBet.objects.create(user_event_bet_id = current_channel_data.id, user_id = uid, bet_amount = current_channel_data.event_bet_amount,
+            user_bet_type = bet_type)
+            CustomUser.objects.filter(id = uid).update(balance = F('balance') - int(current_channel_data.event_bet_amount))
+            return True
+        elif int(current_user_data['user_balance']) >= int(current_channel_data.event_bet_amount) \
+            and current_channel_data.event_finish_accepting_at > datetime.now():
             CurrentUserBet.objects.create(user_event_bet_id = current_channel_data.id, user_id = uid, bet_amount = current_channel_data.event_bet_amount,
             user_bet_type = bet_type)
             CustomUser.objects.filter(id = uid).update(balance = F('balance') - int(current_channel_data.event_bet_amount))

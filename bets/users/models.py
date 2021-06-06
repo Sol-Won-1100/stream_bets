@@ -115,3 +115,5 @@ class UserChannel(models.Model):
 
     def __str__(self):
         return self.channel_url
+
+    

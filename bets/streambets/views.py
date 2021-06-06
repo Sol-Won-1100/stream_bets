@@ -78,7 +78,7 @@ class ChannelPage(View):
         update_current_channel_info(uid, channel_url)
         context = {}
         context['channel_data'] = get_current_channel_info(uid, channel_url)
-        print(context['channel_data'])
+        
         #raise Http404
         context['user_profile_data'] = get_main_data(uid)
         context['bets_stats'] = get_bet_stats(channel_url)
@@ -88,18 +88,12 @@ class ChannelPage(View):
     #TODO: Целый день работы над ставками  ничего больше!
     def post(self, request, channel_url):
         uid = request.user.id
-        
-        #print(request.POST)
         if 'open_bet' in request.POST:
-            #Запрос на открытие ставки
-            print(int(request.POST.get('bet_amount')))
             status  = create_bet(uid, int(request.POST.get('bet_amount')))
-
             return HttpResponseRedirect(request.path_info)
             #return redirect('user_profile_page')
         elif 'bet_takes' in request.POST:
             start_event(uid, int(request.POST.get('wait_time')))
-            print(f"Ставки сделаны, ждём {request.POST.get('wait_time')} секунд и закрываем")
             return HttpResponseRedirect(request.path_info)
         elif 'bet_type' in request.POST:
             bet_type = str(request.POST.get('bet_type'))
