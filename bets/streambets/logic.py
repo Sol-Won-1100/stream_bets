@@ -56,9 +56,42 @@ def get_current_channel_info(uid, channel_url):
         return data
     data['channel_url'] = channel_data.channel_url
     
-    #print("CURRENT DATA",data)
     return data
+
+def return_bets(channel):
+    #TODO: Пересмотреть условия
+    # Проверяем кол-во ставок, если ставок меньше 2х или ставки только на 1 исход -> отменяем событие
+    current_channel_data = UserChannel.objects.get(channel_url = channel)
+    #all_bets = CurrentUserBet.objects.filter(user_event_bet_id = current_channel_data.id)
+    win_bets_count = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id, user_bet_type='win').annotate(Count('user_id', 
+                                         distinct=True))
+    lost_bets_count = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id, user_bet_type='lost').annotate(Count('user_id', 
+                                         distinct=True))
+            
+            
+    if win_bets_count.count() == 0 or lost_bets_count.count() == 0:
+        print("win_bets_count.count() == 0 or lost_bets_count.count() == 0")
+        #Не ставок на победителя или проигравшего, просто возвращаем ставки пользователям
+        print('Не ставок на победителя или проигравшего, просто возвращаем ставки пользователям')
+        p = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).annotate(Count('user_id', 
+                                         distinct=True))
+        for i in p:
+            print(f"Вернули ставку: {i.bet_amount} юзеру с id: {i.user_id}")
+            CustomUser.objects.filter(id=i.user_id).update(balance = F('balance') + i.bet_amount)
+        CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).delete()
+        UserChannel.objects.filter(channel_url = channel).update(channel_status='bets_are_closed')
+        
     
+    elif int(win_bets_count.count()) + int(lost_bets_count.count()) < 2 and win_bets_count.count() == 0 or lost_bets_count.count() == 0:
+        print("int(win_bets_count.count()) + int(lost_bets_count.count()) < 2 and win_bets_count.count() == 0 or lost_bets_count.count() == 0")
+        p = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).annotate(Count('user_id', 
+                                         distinct=True))
+        for i in p:
+            print(f"Вернули ставку: {i.bet_amount} юзеру с id: {i.user_id}")
+            CustomUser.objects.filter(id=i.user_id).update(balance = F('balance') + i.bet_amount)
+        CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).delete()
+        UserChannel.objects.filter(channel_url = channel).update(channel_status='bets_are_closed')
+        print('Сумма ставок на победу и проигрышь меньше 2, возврат')
 
 def update_current_channel_info(uid, channel):
     try:
@@ -67,6 +100,8 @@ def update_current_channel_info(uid, channel):
             # открыли приём ставок
             try:
                 if current_channel.event_finish_accepting_at < datetime.now():
+                    # Стример открыл ставки
+
                     print('Вернули ставки')
             except TypeError:
                 pass
@@ -76,36 +111,9 @@ def update_current_channel_info(uid, channel):
             if current_channel.event_close_bet_at < datetime.now():
                 UserChannel.objects.filter(channel_url = channel).update(channel_status = 'bets_in_process')
 
+
         elif current_channel.channel_status == 'bets_in_process':
-            # Проверяем кол-во ставок, если ставок меньше 2х или ставки только на 1 исход -> отменяем событие
-            current_channel_data = UserChannel.objects.get(channel_url = channel)
-            #all_bets = CurrentUserBet.objects.filter(user_event_bet_id = current_channel_data.id)
-            win_bets_count = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id, user_bet_type='win').annotate(Count('user_id', 
-                                         distinct=True))
-            lost_bets_count = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id, user_bet_type='lost').annotate(Count('user_id', 
-                                         distinct=True))
-            
-            
-            if win_bets_count.count() and lost_bets_count.count():
-                #Не ставок на победителя или проигравшего, просто возвращаем ставки пользователям
-                print('Не ставок на победителя или проигравшего, просто возвращаем ставки пользователям')
-                p = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).annotate(Count('user_id', 
-                                         distinct=True))
-                for i in p:
-                    print(f"Вернули ставку: {i.bet_amount} юзеру с id: {i.user_id}")
-                    CustomUser.objects.filter(id=i.user_id).update(balance = F('balance') + i.bet_amount)
-                CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).delete()
-                UserChannel.objects.filter(channel_url = channel).update(channel_status='bets_are_closed')
-                #return False
-            elif int(win_bets_count.count()) + int(lost_bets_count.count()) < 2:
-                p = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).annotate(Count('user_id', 
-                                         distinct=True))
-                for i in p:
-                    print(f"Вернули ставку: {i.bet_amount} юзеру с id: {i.user_id}")
-                    CustomUser.objects.filter(id=i.user_id).update(balance = F('balance') + i.bet_amount)
-                CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).delete()
-                UserChannel.objects.filter(channel_url = channel).update(channel_status='bets_are_closed')
-                print('Сумма ставок на победу и проигрышь меньше 2, возврат')
+            return_bets(channel)  #  проверяем ставки, если что длаем возврат
 
 
             
@@ -113,6 +121,7 @@ def update_current_channel_info(uid, channel):
 
             #  В процессе
             if current_channel.event_finish_at < datetime.now():
+                return_bets(channel)  #  проверяем ставки, если что длаем возврат
                 print('Стример не завершил событие, возвращаем ставки')
                 UserChannel.objects.filter(channel_url = channel).update(channel_status = 'bets_are_closed')
 

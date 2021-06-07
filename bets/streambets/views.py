@@ -88,7 +88,7 @@ class ChannelPage(View):
             context['channel_url'] = channel_url
         return render(request, 'channel.html', context)
 
-    #TODO: Целый день работы над ставками  ничего больше!
+    #TODO: Работа с celery ()
     def post(self, request, channel_url):
         uid = request.user.id
         if 'open_bet' in request.POST:
