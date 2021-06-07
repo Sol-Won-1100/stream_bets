@@ -99,13 +99,21 @@ class ChannelPage(View):
             bet_type = str(request.POST.get('bet_type'))
             user_do_bet(uid, bet_type, channel_url)
             return HttpResponseRedirect(request.path_info)
+
+
         elif 'bet_win' in request.POST:
             calculate_bets(uid, channel_url, 'win')
             print('bet_win')
-            return redirect('user_profile_page')
+            return HttpResponseRedirect(request.path_info)
         elif 'bet_lost' in request.POST:
-            pass
-            
+            calculate_bets(uid, channel_url, 'win')
+            print('bet_win')
+            return HttpResponseRedirect(request.path_info)
+        elif 'prevent_bet' in request.POST:
+            calculate_bets(uid, channel_url, 'prevent_bet')
+            print('prevent_bet')
+            return HttpResponseRedirect(request.path_info)
+        
         
 
 

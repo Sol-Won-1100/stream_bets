@@ -36,6 +36,7 @@
 {% if channel_data.is_admin %}
 <nav class="panel pl-1">
     <p class="panel-heading">Управление ставками</p>
+    
         {% if channel_data.not_started %}
             {% include 'bet/create_new_bet.html' %}
         {% endif %}

@@ -171,8 +171,6 @@ def get_bet_stats(channel):
 def calculate_bets(uid, channel, result):
     current_channel_data = UserChannel.objects.get(channel_url = channel)
     if current_channel_data.streamer_id == uid:
-
-        print(f'Канал действительно принадлежит стримеру {current_channel_data.id}')
         if result == 'win':
             winners = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id, user_bet_type='win').select_related('user')
             total_coins = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).aggregate(Sum('bet_amount'))
@@ -186,13 +184,38 @@ def calculate_bets(uid, channel, result):
                 print(i.bet_amount)
                 CustomUser.objects.filter(id=i.user_id).update(balance = F('balance') + users_average_awards)
                 print(f"Выдали выиграшь({users_average_awards}) юзеру с id: {i.user_id}")
+
+            UserChannel.objects.filter(channel_url = channel).update(channel_status='bets_are_closed') # Сделать доп. проверку
+            #Выдаем нагруду стримеру
+            CustomUser.objects.filter(id = uid).update(balance = F('balance') + streamer_awards)
+            print(f"Награда стримера: {streamer_awards}")
+            print('Чистим таблицу с текущими ставками')
+            CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).delete()
+        
+        elif result == 'lost':
+            losers = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id, user_bet_type='lost').select_related('user')
+            total_coins = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).aggregate(Sum('bet_amount'))
+            total_coins = total_coins['bet_amount__sum'] 
+            streamer_awards = (total_coins * 10 / 100)
+            fond = (total_coins - streamer_awards) 
+            users_average_awards = int(fond / losers.count())
+            p = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id, user_bet_type='lost').annotate(Count('user_id', 
+                                         distinct=True))
+            for i in p:
+                print(i.bet_amount)
+                CustomUser.objects.filter(id=i.user_id).update(balance = F('balance') + users_average_awards)
+                print(f"Выдали выиграшь({users_average_awards}) юзеру с id: {i.user_id}")
             
+            UserChannel.objects.filter(channel_url = channel).update(channel_status='bets_are_closed') # Сделать доп. проверку
 
             #Выдаем нагруду стримеру
             CustomUser.objects.filter(id = uid).update(balance = F('balance') + streamer_awards)
             print(f"Награда стримера: {streamer_awards}")
+            print('Чистим таблицу с текущими ставками')
+            CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id).delete()
         
-        
+        elif result == 'prevent_bet':
+            pass
         #p = CurrentUserBet.objects.filter(user_event_bet_id=current_channel_data.id, user_bet_type='win').annotate(Count('user_id', 
                                          #distinct=True))
         
