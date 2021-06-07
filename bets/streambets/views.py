@@ -48,7 +48,7 @@ class IndexPage(View):
                 login(request, user)
                 return redirect('main_index_page')
             else:
-                messages.info(request, 'Не верный логин или пароль')
+                messages.error(request, 'Не верный логин или пароль')
                 return redirect('main_index_page')
 
 
@@ -74,15 +74,18 @@ class UserProfile(View):
 
 class ChannelPage(View):
     def get(self, request, channel_url):
-        uid = request.user.id
-        update_current_channel_info(uid, channel_url)
         context = {}
-        context['channel_data'] = get_current_channel_info(uid, channel_url)
+        if request.user.is_authenticated:
+            uid = request.user.id
+            update_current_channel_info(uid, channel_url)
+        
+            context['channel_data'] = get_current_channel_info(uid, channel_url)
         
         #raise Http404
-        context['user_profile_data'] = get_main_data(uid)
-        context['bets_stats'] = get_bet_stats(channel_url)
-        context['channel_url'] = channel_url
+        
+            context['user_profile_data'] = get_main_data(uid)
+            context['bets_stats'] = get_bet_stats(channel_url)
+            context['channel_url'] = channel_url
         return render(request, 'channel.html', context)
 
     #TODO: Целый день работы над ставками  ничего больше!

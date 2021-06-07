@@ -16,6 +16,13 @@
             type="image/x-icon">
         <title>{% block title %} Stream-Bets.com {% endblock %}</title>
 
+        {% if messages %}
+           <link rel="stylesheet" href="{% static 'css/toastr.min.css' %}">
+           <script src="{% static 'js/jquery.min.js' %}"></script> 
+           <script src="{% static 'js/toastr.min.js' %}"></script> 
+
+    {% endif %}
+
     </head>
     <body>
         <nav class="navbar" role="navigation" aria-label="main
@@ -205,6 +212,57 @@
         {% else %}
 
         {% endif %}
+
+        
     <script src="{% static 'js/scripts.js' %}"></script>   
+
+   
+    
+    <script>
+    {% if messages %}
+     {% for message in messages %}
+            {% if message.tags == 'error' %}
+            var msg_type = 'error';
+            
+            
+            {% endif %}
+        
+    {% endfor %}
+    {% endif %}
+    $(function () {
+        var i = -1;
+        var toastCount = 0;
+        var $toastlast;
+        $( document ).ready(function() { //$('#showtoast').click(function ()
+            var shortCutFunction = msg_type; // error success info warning
+            var msg = "Не верный логин и пароль";
+            var title = "";
+            var $showDuration = 300; // 300
+            var $hideDuration = 1000; //1000
+            var $timeOut = 5000; //5000
+            var $extendedTimeOut = 1000; //1000
+            
+            var toastIndex = toastCount++;
+            toastr.options = {
+                closeButton: true,
+                newestOnTop: true,
+                progressBar: false,
+                positionClass:  "toast-top-center",
+                onclick: null
+            };
+            var $toast = toastr[shortCutFunction](msg, title);
+            $toastlast = $toast;
+
+            
+        });
+
+        function getLastToast(){
+            return $toastlast;
+        }
+        
+        
+    });
+</script>
+
     </body>
 </html>
